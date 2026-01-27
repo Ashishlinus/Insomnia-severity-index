@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insomnia Severity Index (ISI)</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f2f5f7;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 15px;
+}
+
+h2 {
+    text-align: center;
+    color: #2c3e50;
+}
+
+p {
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+}
+
+.question {
+    background: #ffffff;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.question strong {
+    display: block;
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    background: #f7f9fa;
+    cursor: pointer;
+}
+
+input[type="radio"] {
+    margin-right: 8px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    background: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+.result {
+    margin-top: 20px;
+    padding: 20px;
+    background: #e8f6f3;
+    border-radius: 8px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.footer-note {
+    font-size: 13px;
+    color: #555;
+    margin-top: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2 id="title">Insomnia Severity Index (ISI)</h2>
+<p id="subtitle">During the last 2 weeks, how severe were your sleep problems?</p>
+
+<form id="isiForm">
+
+<script>
+const questions = [
+"Difficulty falling asleep",
+"Difficulty staying asleep",
+"Problem waking up too early",
+"Satisfaction with your current sleep pattern",
+"Interference of sleep problem with daily functioning",
+"Noticeability of sleep problem to others",
+"Distress caused by sleep problem"
+];
+
+const options = [
+"No problem (0)",
+"Mild (1)",
+"Moderate (2)",
+"Severe (3)",
+"Very severe (4)"
+];
+
+questions.forEach((q, i) => {
+    document.write(`<div class="question"><strong>${i+1}. ${q}</strong>`);
+    options.forEach((opt, val) => {
+        document.write(`
+        <label>
+            <input type="radio" name="q${i}" value="${val}" required>
+            ${opt}
+        </label>
+        `);
+    });
+    document.write(`</div>`);
+});
+</script>
+
+<button type="button" onclick="calculateScore()">Submit</button>
+</form>
+
+<div class="result" id="result" style="display:none;"></div>
+
+<button id="resetBtn" style="display:none;" onclick="resetSurvey()">Take Survey Again</button>
+
+</div>
+
+<script>
+function calculateScore() {
+    let total = 0;
+
+    for (let i = 0; i < 7; i++) {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (!selected) {
+            alert("Please answer all questions.");
+            return;
+        }
+        total += parseInt(selected.value);
+    }
+
+    let interpretation = "";
+    if (total <= 7) interpretation = "No clinically significant insomnia";
+    else if (total <= 14) interpretation = "Subthreshold insomnia";
+    else if (total <= 21) interpretation = "Moderate insomnia";
+    else interpretation = "Severe insomnia";
+
+    // Hide form & headings
+    document.getElementById("isiForm").style.display = "none";
+    document.getElementById("title").style.display = "none";
+    document.getElementById("subtitle").style.display = "none";
+
+    // Show result
+    const resultDiv = document.getElementById("result");
+    resultDiv.style.display = "block";
+    resultDiv.innerHTML =
+        `<strong>Your ISI Score:</strong> ${total} / 28<br><br>
+         <strong>Interpretation:</strong> ${interpretation}
+         <div class="footer-note">
+         This questionnaire is a screening tool and does not replace medical diagnosis.
+         Please consult your doctor for further evaluation and treatment.
+         </div>`;
+
+    // Show reset button
+    document.getElementById("resetBtn").style.display = "block";
+}
+
+function resetSurvey() {
+    location.reload();
+}
+</script>
+
+</body>
+</html>
