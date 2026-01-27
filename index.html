@@ -12,21 +12,34 @@ body {
     background: #f2f5f7;
 }
 
+/* ---------- FORM SCREEN ---------- */
 .container {
     max-width: 600px;
     margin: auto;
     padding: 15px;
 }
 
+.logo {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.logo img {
+    max-width: 180px;
+    height: auto;
+}
+
 h2 {
     text-align: center;
     color: #2c3e50;
+    margin-bottom: 5px;
 }
 
 p {
     text-align: center;
     font-size: 14px;
     color: #555;
+    margin-bottom: 15px;
 }
 
 .question {
@@ -37,22 +50,12 @@ p {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.question strong {
-    display: block;
-    margin-bottom: 10px;
-}
-
 label {
     display: block;
     padding: 8px;
     border-radius: 6px;
     margin-bottom: 6px;
     background: #f7f9fa;
-    cursor: pointer;
-}
-
-input[type="radio"] {
-    margin-right: 8px;
 }
 
 button {
@@ -64,36 +67,61 @@ button {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    margin-top: 10px;
 }
 
-button:hover {
-    background: #0056b3;
-}
-
-.result {
-    margin-top: 20px;
-    padding: 20px;
-    background: #e8f6f3;
-    border-radius: 8px;
-    font-size: 16px;
+/* ---------- RESULT SCREEN ---------- */
+.result-screen {
+    display: none;
+    height: 100vh;
+    background: #1abc9c;
+    color: #ffffff;
+    padding: 20px 15px;
     text-align: center;
+    box-sizing: border-box;
 }
 
-.footer-note {
-    font-size: 13px;
-    color: #555;
-    margin-top: 12px;
+.result-title {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.score {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.interpretation {
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+.advice {
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.reset-btn {
+    margin-top: 20px;
+    background: #ffffff;
+    color: #1abc9c;
+    font-size: 16px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- FORM SCREEN -->
+<div class="container" id="formScreen">
 
-<h2 id="title">Insomnia Severity Index (ISI)</h2>
-<p id="subtitle">During the last 2 weeks, how severe were your sleep problems?</p>
+<div class="logo">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+VemSAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADisAAA4rAavfSG8AAAAYdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCA1LjEuOBtp6qgAAAC2ZVhJZklJKgAIAAAABQAaAQUAAQAAAEoAAAAbAQUAAQAAAFIAAAAcAQUAAQAAAFoAAAAdAQUAAQAAAGIAAAAeAQUAAQAAAGoAAAAgAQUAAQAAAHIAAAAJAQMAAQAAAHoAAAANAQMAAQAAAIKAAAASAQMAAQAAAIqAAAATAQMAAQAAAJKAAAAUAQMAAQAAAJqAAAAWAQMAAQAAAKKAAAAXAQMAAQAAAKqAAAAZAQMAAQAAALKAAAAbAQMAAQAAALqAAAAdAQMAAQAAAMKAAAAeAQMAAQAAAMqAAAAgAQMAAQAAANKAAAAhAQMAAQAAANqAAAAiAQMAAQAAAOIAAAAjAQMAAQAAAOqAAAAkAQMAAQAAAPIAAAAlAQMAAQAAAPqAAAAwAQMAAQAAAP///wAAAABJRU5ErkJggg==" 
+         alt="Charak Pharma Logo">
+</div>
+
+<h2>Insomnia Severity Index (ISI)</h2>
+<p>During the last 2 weeks, how severe were your sleep problems?</p>
 
 <form id="isiForm">
 
@@ -117,7 +145,7 @@ const options = [
 ];
 
 questions.forEach((q, i) => {
-    document.write(`<div class="question"><strong>${i+1}. ${q}</strong>`);
+    document.write(`<div class="question"><strong>${i+1}. ${q}</strong><br>`);
     options.forEach((opt, val) => {
         document.write(`
         <label>
@@ -132,11 +160,18 @@ questions.forEach((q, i) => {
 
 <button type="button" onclick="calculateScore()">Submit</button>
 </form>
+</div>
 
-<div class="result" id="result" style="display:none;"></div>
-
-<button id="resetBtn" style="display:none;" onclick="resetSurvey()">Take Survey Again</button>
-
+<!-- RESULT SCREEN -->
+<div class="result-screen" id="resultScreen">
+    <div class="result-title">Your ISI Score</div>
+    <div class="score" id="scoreText"></div>
+    <div class="interpretation" id="interpretationText"></div>
+    <div class="advice">
+        This questionnaire is a screening tool and does not replace medical diagnosis.<br>
+        <strong>Please consult your doctor for further evaluation and treatment.</strong>
+    </div>
+    <button class="reset-btn" onclick="resetSurvey()">Take Survey Again</button>
 </div>
 
 <script>
@@ -153,29 +188,15 @@ function calculateScore() {
     }
 
     let interpretation = "";
-    if (total <= 7) interpretation = "No clinically significant insomnia";
-    else if (total <= 14) interpretation = "Subthreshold insomnia";
-    else if (total <= 21) interpretation = "Moderate insomnia";
-    else interpretation = "Severe insomnia";
+    if (total <= 7) interpretation = "No Clinically Significant Insomnia";
+    else if (total <= 14) interpretation = "Subthreshold Insomnia";
+    else if (total <= 21) interpretation = "Moderate Insomnia";
+    else interpretation = "Severe Insomnia";
 
-    // Hide form & headings
-    document.getElementById("isiForm").style.display = "none";
-    document.getElementById("title").style.display = "none";
-    document.getElementById("subtitle").style.display = "none";
-
-    // Show result
-    const resultDiv = document.getElementById("result");
-    resultDiv.style.display = "block";
-    resultDiv.innerHTML =
-        `<strong>Your ISI Score:</strong> ${total} / 28<br><br>
-         <strong>Interpretation:</strong> ${interpretation}
-         <div class="footer-note">
-         This questionnaire is a screening tool and does not replace medical diagnosis.
-         Please consult your doctor for further evaluation and treatment.
-         </div>`;
-
-    // Show reset button
-    document.getElementById("resetBtn").style.display = "block";
+    document.getElementById("formScreen").style.display = "none";
+    document.getElementById("resultScreen").style.display = "block";
+    document.getElementById("scoreText").innerText = total + " / 28";
+    document.getElementById("interpretationText").innerText = interpretation;
 }
 
 function resetSurvey() {
